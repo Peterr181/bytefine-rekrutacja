@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Rnd } from "react-rnd";
 import dragIndicator from "../../assets/dragIndicator.svg";
 import emptyCan from "../../assets/emptyCan.svg";
+import { ResizeDirection } from "re-resizable";
 
 interface TextElementProps {
   id: string;
@@ -36,6 +37,7 @@ const TextElement: React.FC<TextElementProps> = ({
   const [width, setWidth] = useState(initialWidth);
   const [height, setHeight] = useState(initialHeight);
   const [isResizing, setIsResizing] = useState(false);
+  const [fontSize, setFontSize] = useState(32);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const colorButtonRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +58,19 @@ const TextElement: React.FC<TextElementProps> = ({
     }
   };
 
+  const handleResize = (
+    e: MouseEvent | TouchEvent,
+    direction: ResizeDirection,
+    ref: HTMLElement
+  ) => {
+    const newWidth = ref.offsetWidth;
+    const newHeight = ref.offsetHeight;
+    const newFontSize = Math.min(newWidth, newHeight) / 2;
+    setFontSize(newFontSize);
+    setWidth(newWidth);
+    setHeight(newHeight);
+  };
+
   return (
     <Rnd
       position={{ x, y }}
@@ -73,17 +88,22 @@ const TextElement: React.FC<TextElementProps> = ({
         setY(d.y);
         onDragEnd(d.x, d.y);
       }}
-      onResizeStart={() => {
-        setIsResizing(true);
+      onResize={(
+        e: MouseEvent | TouchEvent,
+        direction: ResizeDirection,
+        ref
+      ) => {
+        handleResize(e, direction, ref);
       }}
-      onResize={(e, direction, ref) => {
-        setWidth(ref.offsetWidth);
-        setHeight(ref.offsetHeight);
-      }}
-      onResizeStop={(e, direction, ref, delta, position) => {
+      onResizeStop={(
+        e: MouseEvent | TouchEvent,
+        direction: ResizeDirection,
+        ref,
+        delta,
+        position
+      ) => {
         setIsResizing(false);
-        setWidth(ref.offsetWidth);
-        setHeight(ref.offsetHeight);
+        handleResize(e, direction, ref);
         setX(position.x);
         setY(position.y);
         onUpdate(id, value, color);
@@ -125,14 +145,24 @@ const TextElement: React.FC<TextElementProps> = ({
               onUpdate(id, value, color);
             }
           }}
-          className="w-full h-full border-none outline-none resize-none font-bold text-[32px]"
-          style={{ color, whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+          className="w-full h-full border-none outline-none resize-none font-bold"
+          style={{
+            color,
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+            fontSize: `${fontSize}px`,
+          }}
         />
       ) : (
         <div
-          className="w-full h-full flex items-center justify-center font-bold text-[32px]"
+          className="w-full h-full flex items-center justify-center font-bold"
           onDoubleClick={() => setIsEditing(true)}
-          style={{ color, whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+          style={{
+            color,
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+            fontSize: `${fontSize}px`,
+          }}
           draggable={false}
         >
           {value}
