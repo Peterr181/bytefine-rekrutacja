@@ -10,6 +10,7 @@ const EditorPage: React.FC = () => {
       content: string;
       x: number;
       y: number;
+      isEditing?: boolean;
     }[]
   >([]);
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
@@ -23,6 +24,7 @@ const EditorPage: React.FC = () => {
         content: "New Text",
         x: 100,
         y: 100,
+        isEditing: true,
       },
     ]);
   };

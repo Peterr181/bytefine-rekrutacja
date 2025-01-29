@@ -1,7 +1,7 @@
 import React from "react";
-import { Rnd } from "react-rnd";
 import initialCanvasImage from "../../assets/initialCanvasImage.png";
-import TextElement from "../molecules/TextElement"; // Import TextElement
+import TextElement from "../molecules/TextElement";
+import ImageElement from "../molecules/ImageElement";
 
 interface CanvasProps {
   elements: {
@@ -10,10 +10,10 @@ interface CanvasProps {
     content: string;
     x: number;
     y: number;
-    isEditing?: boolean; // Add isEditing property
+    isEditing?: boolean;
   }[];
   backgroundImage: string | null;
-  onDeleteElement: (id: string) => void; // Add onDeleteElement prop
+  onDeleteElement: (id: string) => void;
 }
 
 const Canvas: React.FC<CanvasProps> = ({
@@ -21,10 +21,6 @@ const Canvas: React.FC<CanvasProps> = ({
   backgroundImage,
   onDeleteElement,
 }) => {
-  const handleUpdate = (id: string, newText: string, newColor: string) => {
-    // Handle text update logic here
-  };
-
   return (
     <div className="flex items-center justify-center">
       <div
@@ -47,21 +43,21 @@ const Canvas: React.FC<CanvasProps> = ({
               y={el.y}
               width={200}
               height={50}
-              onUpdate={handleUpdate}
-              onDelete={() => onDeleteElement(el.id)} // Call onDeleteElement
-              isEditing={el.isEditing} // Pass isEditing property
+              onUpdate={() => {}}
+              onDelete={onDeleteElement}
+              isEditing={el.isEditing}
             />
           ) : (
-            <Rnd
+            <ImageElement
               key={el.id}
-              default={{ x: el.x, y: el.y, width: 200, height: 50 }}
-            >
-              <img
-                src={el.content}
-                alt="user upload"
-                className="w-full h-full object-cover"
-              />
-            </Rnd>
+              id={el.id}
+              src={el.content}
+              x={el.x}
+              y={el.y}
+              width={200}
+              height={200}
+              onDelete={onDeleteElement}
+            />
           )
         )}
       </div>
