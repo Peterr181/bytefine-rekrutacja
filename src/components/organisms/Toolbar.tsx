@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import AddContent from "../molecules/AddContent";
 import canvasLogo from "../../assets/canvasLogo.svg";
 import resetIcon from "../../assets/resetIcon.svg";
 import Button from "../atoms/Button";
+import Modal from "./Modal";
 
 interface ToolbarProps {
   onAddText: () => void;
   onAddImage: (image: string) => void;
   onSetBackgroundImage: (image: string) => void;
   onExportToPNG: () => void;
+  onReset: () => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -16,7 +18,19 @@ const Toolbar: React.FC<ToolbarProps> = ({
   onAddImage,
   onSetBackgroundImage,
   onExportToPNG,
+  onReset,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleReset = () => {
+    onReset();
+    toggleModal();
+  };
+
   return (
     <div className=" bg-white rounded-lg w-full flex flex-col justify-between h-[800px]">
       <div>
@@ -31,7 +45,10 @@ const Toolbar: React.FC<ToolbarProps> = ({
               CanvasEditor
             </h1>
           </div>
-          <div className="flex items-center gap-3  cursor-pointer border-b border-b-[#CB0000] pb-[4px]">
+          <div
+            className="flex items-center gap-3  cursor-pointer border-b border-b-[#CB0000] pb-[4px]"
+            onClick={toggleModal}
+          >
             <span className="text-[#CB0000] font-medium">Reset</span>
             <img
               src={resetIcon}
@@ -39,6 +56,13 @@ const Toolbar: React.FC<ToolbarProps> = ({
               className="w-[24px] h-[22px]"
             />
           </div>
+          {isModalOpen && (
+            <Modal
+              isOpen={isModalOpen}
+              onClose={toggleModal}
+              onReset={handleReset}
+            />
+          )}
         </div>
         <div className="bg-gray-100 rounded-[10px] p-[16px] mt-6 mb-9">
           <h2 className="text-lg text-black-100  font-bold">Add content</h2>

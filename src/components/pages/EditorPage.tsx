@@ -84,6 +84,11 @@ const EditorPage: React.FC = () => {
     }
   };
 
+  const handleReset = () => {
+    setElements([]);
+    setBackgroundImage(null);
+  };
+
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="flex gap-6">
@@ -99,6 +104,7 @@ const EditorPage: React.FC = () => {
           onAddImage={addImage}
           onSetBackgroundImage={setBackgroundImage}
           onExportToPNG={handleExportToPNG}
+          onReset={handleReset}
         />
       </div>
     </div>
