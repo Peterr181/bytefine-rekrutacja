@@ -11,6 +11,7 @@ interface ImageElementProps {
   width: number;
   height: number;
   onDelete: (id: string) => void;
+  onDragEnd: (x: number, y: number) => void;
 }
 
 const ImageElement: React.FC<ImageElementProps> = ({
@@ -21,6 +22,7 @@ const ImageElement: React.FC<ImageElementProps> = ({
   width: initialWidth,
   height: initialHeight,
   onDelete,
+  onDragEnd,
 }) => {
   const [x, setX] = useState(initialX);
   const [y, setY] = useState(initialY);
@@ -58,6 +60,11 @@ const ImageElement: React.FC<ImageElementProps> = ({
       onDrag={(e, d) => {
         setX(d.x);
         setY(d.y);
+      }}
+      onDragStop={(e, d) => {
+        setX(d.x);
+        setY(d.y);
+        onDragEnd(d.x, d.y);
       }}
       onResize={(e, direction, ref, delta, position) => {
         setWidth(ref.offsetWidth);

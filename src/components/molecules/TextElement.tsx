@@ -13,6 +13,7 @@ interface TextElementProps {
   onUpdate: (id: string, newText: string, newColor: string) => void;
   onDelete: (id: string) => void;
   isEditing?: boolean;
+  onDragEnd: (x: number, y: number) => void;
 }
 
 const TextElement: React.FC<TextElementProps> = ({
@@ -25,6 +26,7 @@ const TextElement: React.FC<TextElementProps> = ({
   onUpdate,
   onDelete,
   isEditing: initialIsEditing = false,
+  onDragEnd,
 }) => {
   const [isEditing, setIsEditing] = useState(initialIsEditing);
   const [color, setColor] = useState("#353535");
@@ -35,6 +37,7 @@ const TextElement: React.FC<TextElementProps> = ({
   const [height, setHeight] = useState(initialHeight);
   const [isResizing, setIsResizing] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const colorButtonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -42,6 +45,16 @@ const TextElement: React.FC<TextElementProps> = ({
       inputRef.current.setSelectionRange(length, length);
     }
   }, [isEditing]);
+
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    if (
+      !isResizing &&
+      !colorButtonRef.current?.contains(e.relatedTarget as Node)
+    ) {
+      setIsEditing(false);
+      onUpdate(id, value, color);
+    }
+  };
 
   return (
     <Rnd
@@ -54,6 +67,11 @@ const TextElement: React.FC<TextElementProps> = ({
       onDrag={(e, d) => {
         setX(d.x);
         setY(d.y);
+      }}
+      onDragStop={(e, d) => {
+        setX(d.x);
+        setY(d.y);
+        onDragEnd(d.x, d.y);
       }}
       onResizeStart={() => {
         setIsResizing(true);
@@ -99,12 +117,7 @@ const TextElement: React.FC<TextElementProps> = ({
           autoFocus
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onBlur={() => {
-            if (!isResizing) {
-              setIsEditing(false);
-              onUpdate(id, value, color);
-            }
-          }}
+          onBlur={handleBlur}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -112,7 +125,7 @@ const TextElement: React.FC<TextElementProps> = ({
               onUpdate(id, value, color);
             }
           }}
-          className="w-full h-full border-none text-center outline-none resize-none font-bold text-[32px]"
+          className="w-full h-full border-none outline-none resize-none font-bold text-[32px]"
           style={{ color, whiteSpace: "pre-wrap", wordBreak: "break-word" }}
         />
       ) : (
@@ -126,7 +139,10 @@ const TextElement: React.FC<TextElementProps> = ({
         </div>
       )}
       {isEditing && (
-        <div className="absolute -bottom-8 left-2 flex gap-2">
+        <div
+          ref={colorButtonRef}
+          className="absolute -bottom-8 left-2 flex gap-2"
+        >
           {["#353535", "white", "red", "blue", "green"].map((c) => (
             <button
               key={c}

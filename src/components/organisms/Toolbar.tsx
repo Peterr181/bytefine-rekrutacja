@@ -8,12 +8,14 @@ interface ToolbarProps {
   onAddText: () => void;
   onAddImage: (image: string) => void;
   onSetBackgroundImage: (image: string) => void;
+  onExportToPNG: () => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
   onAddText,
   onAddImage,
   onSetBackgroundImage,
+  onExportToPNG,
 }) => {
   return (
     <div className=" bg-white rounded-lg w-full flex flex-col justify-between h-[800px]">
@@ -48,7 +50,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         />
       </div>
       <div className="flex justify-end ">
-        <Button>Export to PNG</Button>
+        <Button onClick={onExportToPNG}>Export to PNG</Button>
       </div>
     </div>
   );
