@@ -58,9 +58,13 @@ const TextElement: React.FC<TextElementProps> = ({
     }
   };
 
+  const handleResizeStart = () => {
+    setIsResizing(true);
+  };
+
   const handleResize = (
-    e: MouseEvent | TouchEvent,
-    direction: ResizeDirection,
+    _e: MouseEvent | TouchEvent,
+    _direction: ResizeDirection,
     ref: HTMLElement
   ) => {
     const newWidth = ref.offsetWidth;
@@ -78,16 +82,17 @@ const TextElement: React.FC<TextElementProps> = ({
       bounds="parent"
       enableResizing={{ bottomRight: true }}
       dragHandleClassName="drag-handle"
-      className={`relative ${isEditing ? "border-2 border-purple-500" : ""}`}
-      onDrag={(e, d) => {
+      className={`relative ${isEditing ? "border-2 border-primary-50" : ""}`}
+      onDrag={(_e, d) => {
         setX(d.x);
         setY(d.y);
       }}
-      onDragStop={(e, d) => {
+      onDragStop={(_e, d) => {
         setX(d.x);
         setY(d.y);
         onDragEnd(d.x, d.y);
       }}
+      onResizeStart={handleResizeStart}
       onResize={(
         e: MouseEvent | TouchEvent,
         direction: ResizeDirection,
@@ -99,7 +104,7 @@ const TextElement: React.FC<TextElementProps> = ({
         e: MouseEvent | TouchEvent,
         direction: ResizeDirection,
         ref,
-        delta,
+        _delta,
         position
       ) => {
         setIsResizing(false);
@@ -151,6 +156,8 @@ const TextElement: React.FC<TextElementProps> = ({
             whiteSpace: "pre-wrap",
             wordBreak: "break-word",
             fontSize: `${fontSize}px`,
+            width: "100%",
+            height: "100%",
           }}
         />
       ) : (
@@ -187,7 +194,7 @@ const TextElement: React.FC<TextElementProps> = ({
       )}
       {isEditing && (
         <div
-          className="absolute -bottom-3 -right-3 w-5 h-5 bg-purple-600 border-2 border-white rounded-full"
+          className="absolute -bottom-3 -right-3 w-5 h-5 bg-primary-50 border-2 border-white rounded-full"
           onMouseDown={(e) => {
             e.stopPropagation();
             setIsEditing(true);

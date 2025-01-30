@@ -12,7 +12,7 @@ const Button: React.FC<ButtonProps> = ({ children, disabled, onClick }) => {
     <button
       className={clsx(
         "pt-[8px] pb-[8px] pr-[32px] pl-[32px] text-[15px] rounded-lg text-white font-medium transition-all duration-200 cursor-pointer",
-        "bg-[#7209B7] hover:bg-[#550788] focus:ring-2 focus:ring-[#7209B7]",
+        "bg-[#7209B7] hover:bg-[#550788] focus:ring-2 focus:ring-primary-50",
         "disabled:bg-[#CDCDCD] disabled:cursor-not-allowed"
       )}
       disabled={disabled}

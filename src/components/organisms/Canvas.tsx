@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import initialCanvasImage from "../../assets/initialCanvasImage.png";
 import TextElement from "../molecules/TextElement";
 import ImageElement from "../molecules/ImageElement";
@@ -22,15 +22,21 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
     { elements, backgroundImage, onDeleteElement, onUpdateElementPosition },
     ref
   ) => {
+    const hasElements = elements.length > 0;
+
     return (
       <div className="flex items-center justify-center">
         <div
           ref={ref}
-          className="w-[759px] h-[800px] relative bg-gray-200"
+          className="lg:w-[759px] w-full h-[800px] relative"
           style={{
             backgroundImage: backgroundImage
               ? `url(${backgroundImage})`
+              : hasElements
+              ? "none"
               : `url(${initialCanvasImage})`,
+            backgroundColor:
+              !backgroundImage && hasElements ? "#9B9B9B" : "transparent",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -43,8 +49,8 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
                 text={el.content}
                 x={el.x}
                 y={el.y}
-                width={200}
-                height={50}
+                width={300}
+                height={150}
                 onUpdate={() => {}}
                 onDelete={onDeleteElement}
                 isEditing={el.isEditing}

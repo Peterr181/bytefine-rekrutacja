@@ -34,7 +34,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   return (
     <div className=" bg-white rounded-lg w-full flex flex-col justify-between h-[800px]">
       <div>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between flex-col lg:flex-row items-center border-b border-white-98 pb-3">
           <div className="flex items-center gap-3 mb-6">
             <img
               src={canvasLogo}
@@ -67,13 +67,15 @@ const Toolbar: React.FC<ToolbarProps> = ({
         <div className="bg-gray-100 rounded-[10px] p-[16px] mt-6 mb-9">
           <h2 className="text-lg text-black-100  font-bold">Add content</h2>
         </div>
-        <AddContent
-          onAddText={onAddText}
-          onAddImage={onAddImage}
-          onSetBackgroundImage={onSetBackgroundImage}
-        />
+        <div className="border-b border-white-98 pb-15">
+          <AddContent
+            onAddText={onAddText}
+            onAddImage={onAddImage}
+            onSetBackgroundImage={onSetBackgroundImage}
+          />
+        </div>
       </div>
-      <div className="flex justify-end ">
+      <div className="flex lg:justify-end justify-center pt-8 lg:pt-0 pb-8 lg:pb-0">
         <Button onClick={onExportToPNG}>Export to PNG</Button>
       </div>
     </div>

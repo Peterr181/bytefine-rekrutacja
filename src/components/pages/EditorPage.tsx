@@ -23,7 +23,7 @@ const EditorPage: React.FC = () => {
       {
         id: Date.now().toString(),
         type: "text",
-        content: "New Text",
+        content: "Type your text here",
         x: 100,
         y: 100,
         isEditing: true,
@@ -90,8 +90,8 @@ const EditorPage: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="flex gap-6">
+    <div className="flex justify-center items-center lg:h-screen h-full">
+      <div className="flex gap-6 lg:flex-row flex-col">
         <Canvas
           ref={canvasRef}
           elements={elements}

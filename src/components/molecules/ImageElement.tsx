@@ -55,24 +55,24 @@ const ImageElement: React.FC<ImageElementProps> = ({
       bounds="parent"
       enableResizing={{ bottomRight: true }}
       dragHandleClassName="drag-handle"
-      className={`relative ${isEditing ? "border-2 border-purple-500" : ""}`}
+      className={`relative ${isEditing ? "border-2 border-primary-50" : ""}`}
       onDragStart={() => setIsEditing(true)}
-      onDrag={(e, d) => {
+      onDrag={(_e, d) => {
         setX(d.x);
         setY(d.y);
       }}
-      onDragStop={(e, d) => {
+      onDragStop={(_e, d) => {
         setX(d.x);
         setY(d.y);
         onDragEnd(d.x, d.y);
       }}
-      onResize={(e, direction, ref, delta, position) => {
+      onResize={(_e, _direction, ref, _delta, position) => {
         setWidth(ref.offsetWidth);
         setHeight(ref.offsetHeight);
         setX(position.x);
         setY(position.y);
       }}
-      onResizeStop={(e, direction, ref, delta, position) => {
+      onResizeStop={(_e, _direction, ref, _delta, position) => {
         setWidth(ref.offsetWidth);
         setHeight(ref.offsetHeight);
         setX(position.x);
@@ -107,7 +107,7 @@ const ImageElement: React.FC<ImageElementProps> = ({
         />
 
         {isEditing && (
-          <div className="absolute -bottom-3 -right-3 w-5 h-5 bg-purple-600 border-2 border-white rounded-full" />
+          <div className="absolute -bottom-3 -right-3 w-5 h-5 bg-primary-50 border-2 border-white rounded-full" />
         )}
       </div>
     </Rnd>

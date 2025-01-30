@@ -29,7 +29,7 @@ const AddContent: React.FC<AddContentProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-8 ">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 ">
       <ActionButton
         icon={<img src={textImage} className="w-[96px] h-[96px]" alt="text" />}
         label="Text"
