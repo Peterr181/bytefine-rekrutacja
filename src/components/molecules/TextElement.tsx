@@ -15,6 +15,7 @@ interface TextElementProps {
   onDelete: (id: string) => void;
   isEditing?: boolean;
   onDragEnd: (x: number, y: number) => void;
+  opacity?: number;
 }
 
 const TextElement: React.FC<TextElementProps> = ({
@@ -28,6 +29,7 @@ const TextElement: React.FC<TextElementProps> = ({
   onDelete,
   isEditing: initialIsEditing = false,
   onDragEnd,
+  opacity: initialOpacity = 1,
 }) => {
   const [isEditing, setIsEditing] = useState(initialIsEditing);
   const [color, setColor] = useState("#353535");
@@ -38,6 +40,7 @@ const TextElement: React.FC<TextElementProps> = ({
   const [height, setHeight] = useState(initialHeight);
   const [isResizing, setIsResizing] = useState(false);
   const [fontSize, setFontSize] = useState(32);
+  const [opacity, setOpacity] = useState(initialOpacity);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const colorButtonRef = useRef<HTMLDivElement>(null);
 
@@ -47,6 +50,14 @@ const TextElement: React.FC<TextElementProps> = ({
       inputRef.current.setSelectionRange(length, length);
     }
   }, [isEditing]);
+
+  useEffect(() => {
+    if (!isEditing && value === "Type your text here") {
+      setOpacity(0.25);
+    } else {
+      setOpacity(1);
+    }
+  }, [isEditing, value]);
 
   const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     if (
@@ -158,6 +169,8 @@ const TextElement: React.FC<TextElementProps> = ({
             fontSize: `${fontSize}px`,
             width: "100%",
             height: "100%",
+            textAlign: "center",
+            opacity: value === "Type your text here" ? 0.25 : 1,
           }}
         />
       ) : (
@@ -169,6 +182,8 @@ const TextElement: React.FC<TextElementProps> = ({
             whiteSpace: "pre-wrap",
             wordBreak: "break-word",
             fontSize: `${fontSize}px`,
+            textAlign: "center",
+            opacity,
           }}
           draggable={false}
         >

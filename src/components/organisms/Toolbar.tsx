@@ -35,7 +35,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
     <div className=" bg-white rounded-lg w-full flex flex-col justify-between h-[800px]">
       <div>
         <div className="flex justify-between flex-col lg:flex-row items-center border-b border-white-98 pb-3">
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center gap-6 ">
             <img
               src={canvasLogo}
               alt="canvas logo image"

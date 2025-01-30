@@ -22,51 +22,34 @@ const AddContent: React.FC<AddContentProps> = ({
     event: React.ChangeEvent<HTMLInputElement>,
     callback: (image: string) => void
   ) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const imageUrl = URL.createObjectURL(event.target.files[0]);
-      callback(imageUrl);
+    const file = event.target.files?.[0];
+    if (file) {
+      callback(URL.createObjectURL(file));
     }
   };
 
+  const renderFileInput = (
+    ref: React.RefObject<HTMLInputElement>,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    icon: string,
+    label: string,
+    onClick: () => void
+  ) => (
+    <label className="cursor-pointer">
+      <input type="file" accept="image/*" className="hidden" ref={ref} onChange={onChange} />
+      <ActionButton icon={<img src={icon} className="w-[96px] h-[96px]" alt={label} />} label={label} onClick={onClick} />
+    </label>
+  );
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 ">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
       <ActionButton
         icon={<img src={textImage} className="w-[96px] h-[96px]" alt="text" />}
         label="Text"
         onClick={onAddText}
       />
-      <label className="cursor-pointer">
-        <input
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => handleFileUpload(e, onAddImage)}
-          ref={imageInputRef}
-        />
-        <ActionButton
-          icon={
-            <img src={photoImage} className="w-[96px] h-[96px]" alt="photo" />
-          }
-          label="Image"
-          onClick={() => imageInputRef.current?.click()}
-        />
-      </label>
-      <label className="cursor-pointer">
-        <input
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => handleFileUpload(e, onSetBackgroundImage)}
-          ref={bgImageInputRef}
-        />
-        <ActionButton
-          icon={
-            <img src={bgImage} className="w-[96px] h-[96px]" alt="background" />
-          }
-          label="Background"
-          onClick={() => bgImageInputRef.current?.click()}
-        />
-      </label>
+      {renderFileInput(imageInputRef, (e) => handleFileUpload(e, onAddImage), photoImage, "Image", () => imageInputRef.current?.click())}
+      {renderFileInput(bgImageInputRef, (e) => handleFileUpload(e, onSetBackgroundImage), bgImage, "Background", () => bgImageInputRef.current?.click())}
     </div>
   );
 };
