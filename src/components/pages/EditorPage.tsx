@@ -3,6 +3,12 @@ import Toolbar from "../organisms/Toolbar";
 import Canvas from "../organisms/Canvas";
 import html2canvas from "html2canvas-pro";
 
+declare global {
+  interface Window {
+    showSaveFilePicker?: () => Promise<FileSystemFileHandle>;
+  }
+}
+
 const EditorPage: React.FC = () => {
   const [elements, setElements] = useState<
     {
@@ -12,6 +18,7 @@ const EditorPage: React.FC = () => {
       x: number;
       y: number;
       isEditing?: boolean;
+      opacity?: number;
     }[]
   >([]);
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
@@ -27,6 +34,7 @@ const EditorPage: React.FC = () => {
         x: 100,
         y: 100,
         isEditing: true,
+        opacity: 0.25,
       },
     ]);
   };
@@ -72,14 +80,62 @@ const EditorPage: React.FC = () => {
           useCORS: true,
         });
 
+        document.body.removeChild(offScreenCanvas);
+
+        const blob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob((blob) => resolve(blob), "image/png")
+        );
+
+        if (!blob) {
+          console.error("Failed to create image blob.");
+          return;
+        }
+
+        if ("showSaveFilePicker" in window) {
+          try {
+            const fileHandle = await (
+              window as unknown as {
+                showSaveFilePicker: (options: {
+                  suggestedName: string;
+                  types: {
+                    description: string;
+                    accept: { [mimeType: string]: string[] };
+                  }[];
+                }) => Promise<FileSystemFileHandle>;
+              }
+            ).showSaveFilePicker({
+              suggestedName: "canvas.png",
+              types: [
+                {
+                  description: "PNG Image",
+                  accept: {
+                    "image/png": [".png"],
+                  },
+                },
+              ],
+            });
+
+            const writable = await fileHandle.createWritable();
+            await writable.write(blob);
+            await writable.close();
+            return;
+          } catch (pickerError) {
+            console.warn("User canceled file save dialog.", pickerError);
+            return;
+          }
+        }
+
+        // Fallback: Automatic download (Firefox & unsupported browsers)
+        const blobUrl = URL.createObjectURL(blob);
         const link = document.createElement("a");
+        link.href = blobUrl;
         link.download = "canvas.png";
-        link.href = canvas.toDataURL("image/png");
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
       } catch (error) {
         console.error("Error exporting canvas:", error);
-      } finally {
-        document.body.removeChild(offScreenCanvas);
       }
     }
   };
