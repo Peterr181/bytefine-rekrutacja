@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Rnd } from "react-rnd";
 import dragIndicator from "../../assets/dragIndicator.svg";
 import emptyCan from "../../assets/emptyCan.svg";
+import useElementEditing from "../../hooks/useElementEditing";
 
 interface ImageElementProps {
   id: string;
@@ -24,29 +25,18 @@ const ImageElement: React.FC<ImageElementProps> = ({
   onDelete,
   onDragEnd,
 }) => {
-  const [x, setX] = useState(initialX);
-  const [y, setY] = useState(initialY);
-  const [width, setWidth] = useState(initialWidth);
-  const [height, setHeight] = useState(initialHeight);
-  const [isEditing, setIsEditing] = useState(true);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
-        setIsEditing(false);
-      }
-    };
-
-    if (isEditing) {
-      window.addEventListener("keydown", handleKeyDown);
-    } else {
-      window.removeEventListener("keydown", handleKeyDown);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isEditing]);
+  const {
+    x,
+    y,
+    width,
+    height,
+    isEditing,
+    setX,
+    setY,
+    setWidth,
+    setHeight,
+    setIsEditing,
+  } = useElementEditing(initialX, initialY, initialWidth, initialHeight);
 
   return (
     <Rnd

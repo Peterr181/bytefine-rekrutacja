@@ -36,8 +36,18 @@ const AddContent: React.FC<AddContentProps> = ({
     onClick: () => void
   ) => (
     <label className="cursor-pointer">
-      <input type="file" accept="image/*" className="hidden" ref={ref} onChange={onChange} />
-      <ActionButton icon={<img src={icon} className="w-[96px] h-[96px]" alt={label} />} label={label} onClick={onClick} />
+      <input
+        type="file"
+        accept="image/*"
+        className="hidden"
+        ref={ref}
+        onChange={onChange}
+      />
+      <ActionButton
+        icon={<img src={icon} className="w-[96px] h-[96px]" alt={label} />}
+        label={label}
+        onClick={onClick}
+      />
     </label>
   );
 
@@ -48,8 +58,20 @@ const AddContent: React.FC<AddContentProps> = ({
         label="Text"
         onClick={onAddText}
       />
-      {renderFileInput(imageInputRef, (e) => handleFileUpload(e, onAddImage), photoImage, "Image", () => imageInputRef.current?.click())}
-      {renderFileInput(bgImageInputRef, (e) => handleFileUpload(e, onSetBackgroundImage), bgImage, "Background", () => bgImageInputRef.current?.click())}
+      {renderFileInput(
+        imageInputRef,
+        (e) => handleFileUpload(e, onAddImage),
+        photoImage,
+        "Image",
+        () => imageInputRef.current?.click()
+      )}
+      {renderFileInput(
+        bgImageInputRef,
+        (e) => handleFileUpload(e, onSetBackgroundImage),
+        bgImage,
+        "Background",
+        () => bgImageInputRef.current?.click()
+      )}
     </div>
   );
 };

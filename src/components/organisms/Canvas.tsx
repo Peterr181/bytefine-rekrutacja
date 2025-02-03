@@ -1,7 +1,12 @@
 import { forwardRef } from "react";
+import { useDispatch } from "react-redux";
 import initialCanvasImage from "../../assets/initialCanvasImage.png";
 import TextElement from "../molecules/TextElement";
 import ImageElement from "../molecules/ImageElement";
+import {
+  deleteElement,
+  updateElementPosition,
+} from "../../redux/slices/editorSlice";
 
 interface CanvasProps {
   elements: {
@@ -13,15 +18,11 @@ interface CanvasProps {
     isEditing?: boolean;
   }[];
   backgroundImage: string | null;
-  onDeleteElement: (id: string) => void;
-  onUpdateElementPosition: (id: string, x: number, y: number) => void;
 }
 
 const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
-  (
-    { elements, backgroundImage, onDeleteElement, onUpdateElementPosition },
-    ref
-  ) => {
+  ({ elements, backgroundImage }, ref) => {
+    const dispatch = useDispatch();
     const hasElements = elements.length > 0;
 
     return (
@@ -51,10 +52,11 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
                 y={el.y}
                 width={300}
                 height={150}
-                onUpdate={() => {}}
-                onDelete={onDeleteElement}
+                onDelete={() => dispatch(deleteElement(el.id))}
                 isEditing={el.isEditing}
-                onDragEnd={(x, y) => onUpdateElementPosition(el.id, x, y)}
+                onDragEnd={(x, y) =>
+                  dispatch(updateElementPosition({ id: el.id, x, y }))
+                }
               />
             ) : (
               <ImageElement
@@ -65,8 +67,10 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
                 y={el.y}
                 width={200}
                 height={200}
-                onDelete={onDeleteElement}
-                onDragEnd={(x, y) => onUpdateElementPosition(el.id, x, y)}
+                onDelete={() => dispatch(deleteElement(el.id))}
+                onDragEnd={(x, y) =>
+                  dispatch(updateElementPosition({ id: el.id, x, y }))
+                }
               />
             )
           )}

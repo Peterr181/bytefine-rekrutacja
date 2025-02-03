@@ -4,23 +4,21 @@ import canvasLogo from "../../assets/canvasLogo.svg";
 import resetIcon from "../../assets/resetIcon.svg";
 import Button from "../atoms/Button";
 import Modal from "./Modal";
+import { useDispatch } from "react-redux";
+import {
+  addText,
+  addImage,
+  setBackgroundImage,
+} from "../../redux/slices/editorSlice";
 
 interface ToolbarProps {
-  onAddText: () => void;
-  onAddImage: (image: string) => void;
-  onSetBackgroundImage: (image: string) => void;
   onExportToPNG: () => void;
   onReset: () => void;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({
-  onAddText,
-  onAddImage,
-  onSetBackgroundImage,
-  onExportToPNG,
-  onReset,
-}) => {
+const Toolbar: React.FC<ToolbarProps> = ({ onExportToPNG, onReset }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -32,10 +30,10 @@ const Toolbar: React.FC<ToolbarProps> = ({
   };
 
   return (
-    <div className=" bg-white rounded-lg w-full flex flex-col justify-between h-[800px]">
+    <div className="bg-white rounded-lg w-full flex flex-col justify-between h-[800px]">
       <div>
         <div className="flex justify-between flex-col lg:flex-row items-center border-b border-white-98 pb-3">
-          <div className="flex items-center gap-6 ">
+          <div className="flex items-center gap-6">
             <img
               src={canvasLogo}
               alt="canvas logo image"
@@ -46,7 +44,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
             </h1>
           </div>
           <div
-            className="flex items-center gap-3  cursor-pointer border-b border-b-[#CB0000] pb-[4px]"
+            className="flex items-center gap-3 cursor-pointer border-b border-b-[#CB0000] pb-[4px]"
             onClick={toggleModal}
           >
             <span className="text-[#CB0000] font-medium">Reset</span>
@@ -65,13 +63,15 @@ const Toolbar: React.FC<ToolbarProps> = ({
           )}
         </div>
         <div className="bg-gray-100 rounded-[10px] p-[16px] mt-6 mb-9">
-          <h2 className="text-lg text-black-100  font-bold">Add content</h2>
+          <h2 className="text-lg text-black-100 font-bold">Add content</h2>
         </div>
         <div className="border-b border-white-98 pb-15">
           <AddContent
-            onAddText={onAddText}
-            onAddImage={onAddImage}
-            onSetBackgroundImage={onSetBackgroundImage}
+            onAddText={() => dispatch(addText())}
+            onAddImage={(image) => dispatch(addImage(image))}
+            onSetBackgroundImage={(image) =>
+              dispatch(setBackgroundImage(image))
+            }
           />
         </div>
       </div>

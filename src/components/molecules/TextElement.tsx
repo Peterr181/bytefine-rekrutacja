@@ -3,6 +3,10 @@ import { Rnd } from "react-rnd";
 import dragIndicator from "../../assets/dragIndicator.svg";
 import emptyCan from "../../assets/emptyCan.svg";
 import { ResizeDirection } from "re-resizable";
+import { useDispatch } from "react-redux";
+import { updateElementContent } from "../../redux/slices/editorSlice";
+import useElementEditing from "../../hooks/useElementEditing";
+import TextColor from "../atoms/TextColor";
 
 interface TextElementProps {
   id: string;
@@ -11,7 +15,6 @@ interface TextElementProps {
   y: number;
   width: number;
   height: number;
-  onUpdate: (id: string, newText: string, newColor: string) => void;
   onDelete: (id: string) => void;
   isEditing?: boolean;
   onDragEnd: (x: number, y: number) => void;
@@ -25,24 +28,31 @@ const TextElement: React.FC<TextElementProps> = ({
   y: initialY,
   width: initialWidth,
   height: initialHeight,
-  onUpdate,
   onDelete,
-  isEditing: initialIsEditing = false,
   onDragEnd,
   opacity: initialOpacity = 1,
 }) => {
-  const [isEditing, setIsEditing] = useState(initialIsEditing);
+  const {
+    x,
+    y,
+    width,
+    height,
+    isEditing,
+    setX,
+    setY,
+    setWidth,
+    setHeight,
+    setIsEditing,
+  } = useElementEditing(initialX, initialY, initialWidth, initialHeight);
+
   const [color, setColor] = useState("#353535");
   const [value, setValue] = useState(text);
-  const [x, setX] = useState(initialX);
-  const [y, setY] = useState(initialY);
-  const [width, setWidth] = useState(initialWidth);
-  const [height, setHeight] = useState(initialHeight);
   const [isResizing, setIsResizing] = useState(false);
   const [fontSize, setFontSize] = useState(32);
   const [opacity, setOpacity] = useState(initialOpacity);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const colorButtonRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -65,7 +75,7 @@ const TextElement: React.FC<TextElementProps> = ({
       !colorButtonRef.current?.contains(e.relatedTarget as Node)
     ) {
       setIsEditing(false);
-      onUpdate(id, value, color);
+      dispatch(updateElementContent({ id, content: value, color }));
     }
   };
 
@@ -122,7 +132,7 @@ const TextElement: React.FC<TextElementProps> = ({
         handleResize(e, direction, ref);
         setX(position.x);
         setY(position.y);
-        onUpdate(id, value, color);
+        dispatch(updateElementContent({ id, content: value, color }));
       }}
     >
       {isEditing && (
@@ -158,33 +168,21 @@ const TextElement: React.FC<TextElementProps> = ({
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
               setIsEditing(false);
-              onUpdate(id, value, color);
+              dispatch(updateElementContent({ id, content: value, color }));
             }
           }}
-          className="w-full h-full border-none outline-none resize-none font-bold"
-          style={{
-            color,
-            whiteSpace: "pre-wrap",
-            wordBreak: "break-word",
-            fontSize: `${fontSize}px`,
-            width: "100%",
-            height: "100%",
-            textAlign: "center",
-            opacity: value === "Type your text here" ? 0.25 : 1,
-          }}
+          className={`w-full h-full border-none outline-none resize-none font-bold text-center break-words whitespace-pre-wrap ${
+            value === "Type your text here" ? "opacity-25" : "opacity-100"
+          }`}
+          style={{ color, fontSize: `${fontSize}px` }}
         />
       ) : (
         <div
-          className="w-full h-full flex items-center justify-center font-bold"
+          className={`w-full h-full flex items-center justify-center font-bold text-center break-words whitespace-pre-wrap ${
+            opacity === 0.25 ? "opacity-25" : "opacity-100"
+          }`}
           onDoubleClick={() => setIsEditing(true)}
-          style={{
-            color,
-            whiteSpace: "pre-wrap",
-            wordBreak: "break-word",
-            fontSize: `${fontSize}px`,
-            textAlign: "center",
-            opacity,
-          }}
+          style={{ color, fontSize: `${fontSize}px` }}
           draggable={false}
         >
           {value}
@@ -196,13 +194,12 @@ const TextElement: React.FC<TextElementProps> = ({
           className="absolute -bottom-8 left-2 flex gap-2"
         >
           {["#353535", "white", "red", "blue", "green"].map((c) => (
-            <button
+            <TextColor
               key={c}
-              className={`w-5 h-5 rounded-full border ${
-                color === c ? "border-2 border-gray-500" : ""
-              }`}
-              style={{ backgroundColor: c }}
-              onClick={() => setColor(c)}
+              color={c}
+              selectedColor={color}
+              onSelect={setColor}
+              onMouseDown={(e) => e.preventDefault()}
             />
           ))}
         </div>

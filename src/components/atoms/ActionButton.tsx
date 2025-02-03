@@ -17,7 +17,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     <button
       className={`
         flex flex-col items-center p-[12px] rounded-[10px] cursor-pointer w-[350px] h-[225px]
-        bg-[#F7F7F8] transition-all
+        bg-white-97 transition-all
         hover:bg-black/25 
         focus:outline-none focus:ring-2 focus:ring-primary-50 focus:bg-white-97
         disabled:opacity-50 disabled:cursor-not-allowed
